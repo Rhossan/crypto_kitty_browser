@@ -38,7 +38,34 @@ class Browser extends Component {
     };
   }
 
+  handleClickRandom(event){
+    event.preventDefault();
+    var state = this.context.drizzle.store.getState();
+    let that = this;
+    let url = 'https://api.cryptokitties.co/kitties?limit=1';
+    let mostRecentKitty = 0;
+    debugger
+    //fetch JSON from url, by limiting to 1, we will receive most recent kittyID constructed in cryptokitties api
+    fetch(url)
+      .then(result => result.json())
+      .then((output) => {
+        console.log('Checkout this JSON! ', output);
+        mostRecentKitty = output.kitties[0].id;
+        //1 to mostRecentKitty created inclusive
+        let randomId =  Math.floor(Math.random() * (mostRecentKitty)) + 1;
 
+         if (state.drizzleStatus.initialized) {
+           const dataKey = this.context.drizzle.contractList[0].methods.getKitty(randomId).call();
+           var result = 0;
+           dataKey.then(function(result) {
+             that.setState({ kittyId: randomId, birthdate : result.birthTime, genes: result.genes, generation: result.generation});
+           });
+         }
+      })
+    .catch(err => { throw err });
+
+
+  }
   handleClick(event){
     event.preventDefault();
     // this.setState({count: this.state.count+1 });
@@ -82,17 +109,19 @@ class Browser extends Component {
         <h1>
           Kitty Browser
         </h1>
-
-        <form onSubmit={this.handleClick.bind(this)}>
-          <label> Kitty ID:
-            <input className='input'
-              type= 'text'
-              value= {this.state.kittyId}
-              onChange= {this.update('kittyId')}
-              />
-          </label>
-          <input className='button' type="submit" value='Find Kitty' />
-        </form>
+        <div>
+          <form onSubmit={this.handleClick.bind(this)}>
+            <label> Kitty ID:
+              <input className='input'
+                type= 'text'
+                value= {this.state.kittyId}
+                onChange= {this.update('kittyId')}
+                />
+            </label>
+            <input className='button' type="submit" value='Find Kitty' />
+            <button className='button button-random' onClick={this.handleClickRandom.bind(this)}>Random Kitty</button>
+          </form>
+        </div>
 
         <KittyIndex birthdate = {this.state.birthdate} genes = {this.state.genes}
           generation = {this.state.generation} kittyId = {this.state.kittyId} />

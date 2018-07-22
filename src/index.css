@@ -25,6 +25,10 @@ body {
   color: white;
 }
 
+.button-random{
+  background: #8416a5;
+}
+
 .container {
   margin-top: 50px;
   display: flex;

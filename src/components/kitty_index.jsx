@@ -15,6 +15,13 @@ class KittyIndex extends React.Component {
     imageSrc += kittyId;
     imageSrc += '.svg';
 
+
+    const date = new Date(birthdate * 1000);
+    let locale = "en-us";
+    let month = date.toLocaleString(locale, {month: "long"});
+    let day = date.getDate();
+    let year = date.getFullYear();
+
     debugger
     if (!birthdate) {
       return <div></div>;
@@ -31,10 +38,12 @@ class KittyIndex extends React.Component {
           />
         </div>
         <div className='info'>
-          <h2>Birth Time</h2>
-          <h3>{birthdate}</h3>
+          <h2>Genes</h2>
           <h3>{genes}</h3>
+          <h2>Generation</h2>
           <h3>{generation}</h3>
+          <h2>Birth Time</h2>
+          <h3>{month} {day}, {year}</h3>
         </div>
       </div>
     );}
