@@ -3,17 +3,20 @@ import { object } from 'prop-types';
 import Web3 from 'web3';
 import KittyCoreABI from '../contracts/KittyCoreABI.json';
 import { CONTRACT_NAME, CONTRACT_ADDRESS } from '../config';
+import KittyIndex from './kitty_index'
 
 class Browser extends Component {
   constructor() {
     super();
-    this.state = {count: 0}
+    //this.handleClick = this.handleClick.bind(this);
+    this.state = {birthdate: '', genes: '', kittyId: '', generation: ''};
+    this.handleClick = this.handleClick.bind(this);
   }
+
   componentDidMount() {
      const web3 = new Web3(window.web3.currentProvider);
 
     // Initialize the contract instance
-
      const kittyContract = new web3.eth.Contract(
        KittyCoreABI, // import the contracts's ABI and use it here
        CONTRACT_ADDRESS
@@ -25,23 +28,34 @@ class Browser extends Component {
        contractName: CONTRACT_NAME,
        web3Contract: kittyContract
      });
-     debugger
      console.log(this.context.drizzle);
 
   }
+  //update kittyId state on each keystroke
+  update(field){
+    return (e) => {
+      this.setState({[field]: e.target.value});
+    };
+  }
 
-  click(event){
+
+  handleClick(event){
     event.preventDefault();
-    this.setState({count: this.state.count+1 });
+    // this.setState({count: this.state.count+1 });
     var state = this.context.drizzle.store.getState();
+    var that = this;
+    var birthdate = '';
      if (state.drizzleStatus.initialized) {
-
-
-       const dataKey = this.context.drizzle.contractList[0].methods.getKitty(123123).call();
+       const dataKey = this.context.drizzle.contractList[0].methods.getKitty(this.state.kittyId).call();
        var result = 0;
        dataKey.then(function(result) {
+         debugger
+
+         that.setState({birthdate : result.birthTime, genes: result.genes, generation: result.generation});
+         console.log(birthdate)
          console.log(result) //will log results.
-       })
+
+       });
 
        // birthTime - convert unix epoch time
        // generation
@@ -51,7 +65,9 @@ class Browser extends Component {
        // where 0x06012c8cf97bead5deae237070f9587f8e7a266d is ethereum address for CryptoKittiesCore
        // and 123123 is kittyId
 
-
+       //picking a random kitty - 1-499999
+       debugger
+       //this.setState({kittyInfo : result});
        var account = result;
 
      }
@@ -66,7 +82,23 @@ class Browser extends Component {
         <h1>
           Kitty Browser
         </h1>
-        <button onClick={this.click.bind(this)}>click me</button>
+
+        <form onSubmit={this.handleClick.bind(this)}>
+          <label> Kitty ID:
+            <input className='input'
+              type= 'text'
+              value= {this.state.kittyId}
+              onChange= {this.update('kittyId')}
+              />
+          </label>
+          <input className='button' type="submit" value='Find Kitty' />
+        </form>
+
+        <KittyIndex birthdate = {this.state.birthdate} genes = {this.state.genes}
+          generation = {this.state.generation} kittyId = {this.state.kittyId} />
+
+
+
         {/* Input to type in the kitty ID here */}
 
         {/* Display Kitty info here */}
@@ -80,3 +112,4 @@ Browser.contextTypes = {
 };
 
 export default Browser;
+  // <button onClick={this.click.bind(this)}>click me</button>
