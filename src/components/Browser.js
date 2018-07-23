@@ -46,7 +46,6 @@ class Browser extends Component {
     fetch(url)
       .then(result => result.json())
       .then((output) => {
-        console.log('Checkout this JSON! ', output);
         mostRecentKitty = output.kitties[0].id;
         //1 to mostRecentKitty created inclusive
         let randomId =  Math.floor(Math.random() * (mostRecentKitty)) + 1;
@@ -68,7 +67,6 @@ class Browser extends Component {
     // this.setState({count: this.state.count+1 });
     var state = this.context.drizzle.store.getState();
     var that = this;
-    var birthdate = '';
      if (state.drizzleStatus.initialized) {
        const dataKey = this.context.drizzle.contractList[0].methods.getKitty(this.state.kittyId).call();
        dataKey.then(function(result) {

@@ -9,7 +9,7 @@ class KittyIndex extends React.Component {
     // where 0x06012c8cf97bead5deae237070f9587f8e7a266d is ethereum address for CryptoKittiesCore
     // and 123123 is kittyId
     let imageSrc = 'https://storage.googleapis.com/ck-kitty-image/0x06012c8cf97bead5deae237070f9587f8e7a266d/'
-    debugger
+
     let image = '';
     if(idBool){
       imageSrc += kittyId
@@ -23,7 +23,7 @@ class KittyIndex extends React.Component {
         />
       )
     } else {
-      image= (<h1></h1>);
+      image = (<p></p>);
     }
 
 
@@ -35,7 +35,6 @@ class KittyIndex extends React.Component {
     let day = date.getDate();
     let year = date.getFullYear();
 
-    debugger
     if (!idBool) {
       return <div></div>;
     }
