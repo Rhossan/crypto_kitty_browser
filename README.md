@@ -1,29 +1,28 @@
 # Kitty Browser
 
-CryptoKitty Notes
+## CryptoKitty Notes
 
-Browser Component(Parent)
-  Constructor
+### Browser Component(Parent)
+  #### Constructor
     state will hold all necessary data: birthdate, genes, kittyId, generation, idBool
-  componentDidMount
+  #### componentDidMount
     Initialize the contract instance and import the contracts's ABI
     Add the contract to the drizzle store
-  Update
+  #### Update
     update kittyId state on each keystroke from the input field
     set idBool to false,
-  handleClick
+  #### handleClick
     event handler that makes a web3 call to getKitty(), passing in the user input. Retrieves relevant kitty information
-  handleClickRandom
-    fetch JSON from url, by limiting to 1, we will receive most recent kittyID constructed in the cryptokitties api. We will choose a random kitty (inclusive of 1 through mostRecentKitty Id number)
-  render
+  #### handleClickRandom
+    fetch JSON from url, by limiting to 1, we will receive most recent kittyID constructed in the cryptokitties api. We will choose a       random kitty (inclusive of 1 through mostRecentKitty Id number)
+  #### render
     contains a form for user to fill out kitty id and click getKitty submit button, as well as a button for randomKitty
     contains a KittyIndex component which will have all relevant props passed to it
 
-  KittyIndex Component(Child)
-    render
+  ### KittyIndex Component(Child)
+    #### render
       renders all relevant kitty information including image, birth date, genes, and generation
-
-      crypto-kitties images are stored on google storage, we get the initial url, concat with the ethereum address for CryptoKittiesCore, and kittyId, to ultimately get the image svg that we set in the img tag.
+      crypto-kitties images are stored on google storage, we get the initial url, concat with the ethereum address for                 CryptoKittiesCore, and kittyId, to ultimately get the image svg that we set in the img tag.
 
 
 
