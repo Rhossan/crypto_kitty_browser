@@ -9,8 +9,9 @@ class Browser extends Component {
   constructor() {
     super();
     //this.handleClick = this.handleClick.bind(this);
-    this.state = {birthdate: '', genes: '', kittyId: '', generation: ''};
+    this.state = {birthdate: '', genes: '', kittyId: '', generation: '', idBool:false};
     this.handleClick = this.handleClick.bind(this);
+    this.handleClickRandom = this.handleClickRandom.bind(this);
   }
 
   componentDidMount() {
@@ -21,20 +22,17 @@ class Browser extends Component {
        KittyCoreABI, // import the contracts's ABI and use it here
        CONTRACT_ADDRESS
      );
-
     // Add the contract to the drizzle store
-    console.log(kittyContract)
      this.context.drizzle.addContract({
        contractName: CONTRACT_NAME,
        web3Contract: kittyContract
      });
-     console.log(this.context.drizzle);
-
   }
+
   //update kittyId state on each keystroke
   update(field){
     return (e) => {
-      this.setState({[field]: e.target.value});
+      this.setState({[field]: e.target.value, idBool:false});
     };
   }
 
@@ -44,7 +42,6 @@ class Browser extends Component {
     let that = this;
     let url = 'https://api.cryptokitties.co/kitties?limit=1';
     let mostRecentKitty = 0;
-    debugger
     //fetch JSON from url, by limiting to 1, we will receive most recent kittyID constructed in cryptokitties api
     fetch(url)
       .then(result => result.json())
@@ -56,9 +53,9 @@ class Browser extends Component {
 
          if (state.drizzleStatus.initialized) {
            const dataKey = this.context.drizzle.contractList[0].methods.getKitty(randomId).call();
-           var result = 0;
+           // var result = 0;
            dataKey.then(function(result) {
-             that.setState({ kittyId: randomId, birthdate : result.birthTime, genes: result.genes, generation: result.generation});
+             that.setState({ kittyId: randomId, birthdate : result.birthTime, genes: result.genes, generation: result.generation, idBool: true});
            });
          }
       })
@@ -74,36 +71,14 @@ class Browser extends Component {
     var birthdate = '';
      if (state.drizzleStatus.initialized) {
        const dataKey = this.context.drizzle.contractList[0].methods.getKitty(this.state.kittyId).call();
-       var result = 0;
        dataKey.then(function(result) {
-         debugger
-
-         that.setState({birthdate : result.birthTime, genes: result.genes, generation: result.generation});
-         console.log(birthdate)
-         console.log(result) //will log results.
-
+         that.setState({kittyId: that.state.kittyId, birthdate : result.birthTime, genes: result.genes, generation: result.generation, idBool: true});
        });
-
-       // birthTime - convert unix epoch time
-       // generation
-       // genes
-       // for image - is stored on the web server -
-       // storage.googleapis.com/ck-kitty-image/0x06012c8cf97bead5deae237070f9587f8e7a266d/123123.svg
-       // where 0x06012c8cf97bead5deae237070f9587f8e7a266d is ethereum address for CryptoKittiesCore
-       // and 123123 is kittyId
-
-       //picking a random kitty - 1-499999
-       debugger
-       //this.setState({kittyInfo : result});
-       var account = result;
-
      }
   }
 
 
   render() {
-
-
     return (
       <div className="browser">
         <h1>
@@ -119,18 +94,13 @@ class Browser extends Component {
                 />
             </label>
             <input className='button' type="submit" value='Find Kitty' />
-            <button className='button button-random' onClick={this.handleClickRandom.bind(this)}>Random Kitty</button>
+            <button className='button button-random' onClick={this.handleClickRandom}>Random Kitty</button>
           </form>
         </div>
 
         <KittyIndex birthdate = {this.state.birthdate} genes = {this.state.genes}
-          generation = {this.state.generation} kittyId = {this.state.kittyId} />
+          generation = {this.state.generation} kittyId = {this.state.kittyId} idBool = {this.state.idBool} />
 
-
-
-        {/* Input to type in the kitty ID here */}
-
-        {/* Display Kitty info here */}
       </div>
     );
   }
@@ -141,4 +111,3 @@ Browser.contextTypes = {
 };
 
 export default Browser;
-  // <button onClick={this.click.bind(this)}>click me</button>
